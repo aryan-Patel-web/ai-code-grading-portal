@@ -22,6 +22,9 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+
+
+
 import axios from 'axios'
 
 const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions'

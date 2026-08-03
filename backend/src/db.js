@@ -5,6 +5,8 @@ import mongoose from 'mongoose'
  * Called once from server.js before app.listen().
  * Exits the process on failure so the server never starts in a broken state.
  */
+
+
 export async function connectDB() {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {

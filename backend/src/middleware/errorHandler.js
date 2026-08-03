@@ -8,6 +8,8 @@
  *   - Errors with .status set   → that status
  *   - Everything else           → 500
  */
+
+
 export function errorHandler(err, _req, res, _next) {
   // Log full stack in development; in production you'd send to a log service
   console.error('❌ Error:', err.stack || err.message)

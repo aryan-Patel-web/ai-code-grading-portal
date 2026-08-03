@@ -9,6 +9,12 @@ import { sanitizeInput, draftAnswer } from '../services/mistralService.js'
  *   2. Controller transition guard (assertTransition) — called before every .save()
  *      to verify the current status allows the requested transition.
  *
+ * 
+ * 
+
+
+
+ 
  * Legal transitions:
  *   pending → approved   (approveDoubt / editAndApprove)
  *   pending → rejected   (rejectDoubt)

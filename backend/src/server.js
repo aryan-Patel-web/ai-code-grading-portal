@@ -6,6 +6,8 @@ import submissionsRouter from './routes/submissions.js'
 import doubtsRouter from './routes/doubts.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
+
+
 const app = express()
 const PORT = process.env.PORT || 5000
 
