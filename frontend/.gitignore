@@ -8,18 +8,20 @@ node_modules/
 .env.production
 !.env.example
 
+# Build
+dist/
+build/
+
+# Vite
+.vite/
+
 # Logs
 logs/
 *.log
 npm-debug.log*
 
-# Build
-dist/
+# Coverage
 coverage/
-
-# Temporary files
-tmp/
-temp/
 
 # IDE
 .vscode/

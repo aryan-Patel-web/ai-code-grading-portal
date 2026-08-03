@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 // VITE_API_URL is empty in dev → Vite proxy handles /api → localhost:5000
-// Set VITE_API_URL in production to your deployed backend URL
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: { 'Content-Type': 'application/json' },
-  timeout: 30000, // 30s — sandbox execution can take a few seconds
+  timeout: 120000, // 120s — Mistral can be slow; sandbox also needs time
 })
 
 // Response interceptor: unwrap errors into a consistent shape
