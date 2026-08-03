@@ -1,5 +1,5 @@
 # AI-Powered Code Grading & Doubt Resolution Portal
-### KPMG G&PS E&S Internship Assignment — README v2
+### KPMG G&PS E&S Internship Assignment 
 
 ---
 
