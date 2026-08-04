@@ -2,15 +2,18 @@
  * mistralService.js
  *
  * PROMPT INJECTION DEFENCE — two layers:
- *   Layer 1: sanitizeInput() strips known injection patterns line-by-line
- *            and logs every detected attempt to MongoDB (InjectionLog)
+ *   Layer 1: sanitizeInput() strips known injection patterns + logs to MongoDB
  *   Layer 2: Hardened system prompt instructs model to ignore embedded instructions
  *
  * OUTPUT VALIDATION — before storing/rendering any Mistral response:
  *   - Strips HTML tags
  *   - Caps length at MAX_OUTPUT_CHARS
- *   - Rejects empty responses
+ *   - Rejects empty/short responses
  *   - Detects injection bleed-through in output
+ *
+ * RETRY LOGIC — ECONNRESET handling:
+ *   Mistral API sometimes drops connections. We retry up to 2 times with
+ *   a 2-second delay before giving up.
  */
 
 import axios from 'axios'
@@ -19,8 +22,10 @@ import InjectionLog from '../models/InjectionLog.js'
 const MISTRAL_API_URL  = 'https://api.mistral.ai/v1/chat/completions'
 const MAX_INPUT_CHARS  = 2000
 const MAX_OUTPUT_CHARS = 3000
+const MAX_RETRIES      = 2
+const RETRY_DELAY_MS   = 2000
 
-// ─── Injection patterns with labels (labels stored in MongoDB for audit) ──────
+// ─── Injection patterns ───────────────────────────────────────────────────────
 const INJECTION_PATTERNS = [
   { label: 'ignore-previous',  regex: /^\s*ignore\s+(previous|above|all|prior)/i },
   { label: 'forget-previous',  regex: /^\s*forget\s+(previous|above|all|prior|everything)/i },
@@ -46,16 +51,13 @@ export function sanitizeInput(raw) {
   text = text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
 
   const patternsFound = []
-
-  // Check full text for multi-line patterns
   INJECTION_PATTERNS.forEach(({ label, regex }) => {
     if (regex.test(raw) && !patternsFound.includes(label)) patternsFound.push(label)
   })
 
-  // Remove matching lines
-  const cleanLines = text.split('\n').filter((line) => {
-    return !INJECTION_PATTERNS.some(({ regex }) => regex.test(line))
-  })
+  const cleanLines = text.split('\n').filter((line) =>
+    !INJECTION_PATTERNS.some(({ regex }) => regex.test(line))
+  )
 
   text = cleanLines.join('\n').replace(/\n{4,}/g, '\n\n\n').trim()
   return { sanitized: text, patternsFound }
@@ -95,6 +97,46 @@ function validateOutput(raw) {
   return { valid: true, cleaned: cleaned.trim() }
 }
 
+// ─── Retry helper ─────────────────────────────────────────────────────────────
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function callMistralWithRetry(payload, apiKey) {
+  let lastError
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await axios.post(MISTRAL_API_URL, payload, {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 60000,
+      })
+      return response
+    } catch (err) {
+      lastError = err
+      const isRetryable = (
+        err.code === 'ECONNRESET' ||
+        err.code === 'ECONNABORTED' ||
+        err.code === 'ETIMEDOUT' ||
+        err.code === 'ENOTFOUND' ||
+        err?.response?.status === 429 ||
+        err?.response?.status >= 500
+      )
+
+      if (isRetryable && attempt < MAX_RETRIES) {
+        const delay = RETRY_DELAY_MS * (attempt + 1)
+        console.warn(`⚠️  Mistral API error (${err.code || err?.response?.status}), retrying in ${delay}ms... (attempt ${attempt + 1}/${MAX_RETRIES})`)
+        await sleep(delay)
+        continue
+      }
+      break
+    }
+  }
+  throw lastError
+}
+
 // ─── System prompts ───────────────────────────────────────────────────────────
 const DOUBT_SYSTEM_PROMPT = `You are a helpful teaching assistant for a university-level programming course.
 Your ONLY task is to answer the student's coding question in the user message.
@@ -130,21 +172,20 @@ export async function draftAnswer(sanitizedQuestion) {
 
   let response
   try {
-    response = await axios.post(MISTRAL_API_URL, {
+    response = await callMistralWithRetry({
       model,
       messages: [
         { role: 'system', content: DOUBT_SYSTEM_PROMPT },
         { role: 'user',   content: sanitizedQuestion },
       ],
-      max_tokens: 600, temperature: 0.4,
-    }, {
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      timeout: 60000,
-    })
+      max_tokens: 600,
+      temperature: 0.4,
+    }, apiKey)
   } catch (err) {
-    if (err.code === 'ECONNABORTED') throw new Error('Mistral API timed out.')
+    if (err.code === 'ECONNRESET')   throw new Error('Mistral API connection reset. Check your internet and try again.')
+    if (err.code === 'ECONNABORTED') throw new Error('Mistral API timed out. Check your internet connection.')
     if (err?.response?.status === 401) throw new Error('Mistral API key is invalid.')
-    if (err?.response?.status === 429) throw new Error('Mistral rate limit hit. Wait a moment.')
+    if (err?.response?.status === 429) throw new Error('Mistral rate limit hit. Wait a moment and try again.')
     throw new Error(`Mistral API error: ${err?.response?.data?.message || err.message}`)
   }
 
@@ -161,17 +202,15 @@ export async function getCodeFeedback(code, language = 'python') {
   if (!apiKey || apiKey === 'your_mistral_api_key_here') return null
 
   try {
-    const response = await axios.post(MISTRAL_API_URL, {
+    const response = await callMistralWithRetry({
       model,
       messages: [
         { role: 'system', content: CODE_FEEDBACK_SYSTEM_PROMPT },
         { role: 'user',   content: `Language: ${language}\n\nCode:\n\`\`\`${language}\n${code.slice(0, 3000)}\n\`\`\`` },
       ],
-      max_tokens: 500, temperature: 0.3,
-    }, {
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      timeout: 60000,
-    })
+      max_tokens: 500,
+      temperature: 0.3,
+    }, apiKey)
 
     const raw     = response?.data?.choices?.[0]?.message?.content || ''
     const jsonStr = raw.replace(/```json|```/g, '').trim()
