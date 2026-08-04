@@ -1,19 +1,11 @@
 import { Router } from 'express'
-import {
-  createSubmission,
-  getAllSubmissions,
-  getSubmissionById,
-} from '../controllers/submissionController.js'
+import { createSubmission, getAllSubmissions, getSubmissionById } from '../controllers/submissionController.js'
+import { requireAuth } from '../middleware/auth.js'
 
 const router = Router()
 
-// POST /api/submissions — submit code, run sandbox, grade, store
-router.post('/', createSubmission)
-
-// GET /api/submissions — list all submissions (newest first)
-router.get('/', getAllSubmissions)
-
-// GET /api/submissions/:id — single submission with full details
-router.get('/:id', getSubmissionById)
+router.post('/',   requireAuth, createSubmission)
+router.get('/',    requireAuth, getAllSubmissions)
+router.get('/:id', requireAuth, getSubmissionById)
 
 export default router

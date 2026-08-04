@@ -1,26 +1,6 @@
 # Dockerfile.sandbox
-# ─────────────────────────────────────────────────────────────────────────────
-# This image is used ONLY to run student-submitted Python code in isolation.
-# It is NOT the image the Express server itself runs in.
-#
-# Security properties:
-#   - python:3.11-slim has minimal attack surface (no gcc, no curl, no pip extras)
-#   - No extra packages installed — only Python stdlib available to student code
-#   - At runtime we add: --network=none --memory=128m --cpus=0.5 --read-only --rm
-#   - The student's code file is volume-mounted read-only; nothing else is visible
-#
-# Build once: docker build -f Dockerfile.sandbox -t kpmg-sandbox .
-# (sandboxService.js uses the pre-pulled python:3.11-slim image directly,
-#  so this Dockerfile is provided for documentation and optional custom builds)
-# ─────────────────────────────────────────────────────────────────────────────
-
-
+# Used ONLY to run student-submitted code in isolation.
+# At runtime: docker run --rm --network=none --memory=128m --cpus=0.5 -i python:3.11-slim python -
 FROM python:3.11-slim
-
-# No RUN steps — we want the absolute minimal image
-# No USER directive needed — Docker --read-only + --network=none is the boundary
-
 WORKDIR /sandbox
-
-# Default CMD is overridden at runtime by sandboxService.js
 CMD ["python", "--version"]
