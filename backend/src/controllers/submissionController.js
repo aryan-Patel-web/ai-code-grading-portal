@@ -10,6 +10,7 @@ export async function createSubmission(req, res, next) {
     if (!['python', 'javascript'].includes(language)) {
       const e = new Error('Supported languages: python, javascript'); e.status = 400; return next(e)
     }
+    
 
     const gradeResult = await grade(code.trim(), language)
 

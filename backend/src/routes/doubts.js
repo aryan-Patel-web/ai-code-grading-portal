@@ -7,6 +7,7 @@ import { requireAuth, requireTeacher } from '../middleware/auth.js'
 
 const router = Router()
 
+
 // IMPORTANT: /pending and /injection-logs MUST be before /:id
 router.get('/pending',        requireAuth, requireTeacher, getPendingDoubts)
 router.get('/injection-logs', requireAuth, requireTeacher, getInjectionLogs)

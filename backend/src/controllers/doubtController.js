@@ -14,6 +14,7 @@ function assertTransition(doubt, targetStatus) {
   }
 }
 
+
 export async function createDoubt(req, res, next) {
   try {
     const { studentId, questionText } = req.body
