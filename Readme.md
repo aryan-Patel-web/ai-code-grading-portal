@@ -99,7 +99,7 @@ Express.js REST API (Backend)
 
 | Role | Username | Password |
 |---|---|---|
-| Student | `123` | (your password) |
+| Student | `123` | 123 |
 | Teacher | `teacher1` | `teacher123` |
 
 ---
