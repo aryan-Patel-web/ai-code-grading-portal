@@ -6,16 +6,31 @@ import DoubtBoard        from './pages/DoubtBoard'
 import TeacherDashboard  from './pages/TeacherDashboard'
 import SubmissionHistory from './pages/SubmissionHistory'
 import InjectionLogs     from './pages/InjectionLogs'
+import api               from './api'
 
 export default function App() {
-  const [user, setUser] = useState(null)
+  const [user, setUser]       = useState(null)
+  const [checking, setChecking] = useState(true)
 
   useEffect(() => {
     const stored = localStorage.getItem('user')
     const token  = localStorage.getItem('token')
     if (stored && token) {
-      try { setUser(JSON.parse(stored)) } catch { /* ignore */ }
+      try {
+        // Verify token is still valid against backend
+        setUser(JSON.parse(stored))
+        api.get('/auth/me').catch(() => {
+          // Token invalid on server — clear and show login
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          setUser(null)
+        })
+      } catch {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+      }
     }
+    setChecking(false)
   }, [])
 
   const handleLogin  = (userData) => setUser(userData)
@@ -34,6 +49,9 @@ export default function App() {
     background: isActive ? 'rgba(0,184,212,0.12)' : 'transparent',
     transition: 'all 0.15s',
   })
+
+  // While checking localStorage, show nothing (prevents flash)
+  if (checking) return null
 
   if (!user) {
     return (
