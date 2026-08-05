@@ -4,7 +4,7 @@
 
 1. **Live Demo:** https://kpmg-frontend.onrender.com
 2. **GitHub Repository:** https://github.com/Aryan-Patel-web/ai-code-grading-portal
-3. **Tech Stack:** Next.js, MERN, PostgreSQL, GenAI, RAG, LLM Integration
+3. **Name:** Aryan Patel
 
 ---
 
