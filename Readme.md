@@ -2,7 +2,7 @@
 
 > **KPMG G&PS E&S Internship Assignment — GenAI Track**
 > Deployed: https://kpmg-frontend.onrender.com
-> **Repo: https://github.com/Aryan-Patel-web/ai-code-grading-portal**
+ *Repo: https://github.com/Aryan-Patel-web/ai-code-grading-portal**
 
 ---
 
