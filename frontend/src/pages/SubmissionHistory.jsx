@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import api from '../api'
 
-export default function SubmissionHistory({ user }) {
+export default function SubmissionHistory({ user, onLogout }) {
   const [submissions, setSubmissions] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError]     = useState('')
-  const [expanded, setExpanded] = useState(null)
+  const [loading, setLoading]         = useState(true)
+  const [error, setError]             = useState('')
+  const [expanded, setExpanded]       = useState(null)
 
   useEffect(() => {
     api.get(`/submissions?studentId=${user?.username || ''}`)
       .then(({ data }) => setSubmissions(data))
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        const msg = err.message || ''
+        // Token expired — clear session and go to login
+        if (msg.toLowerCase().includes('token') || msg.toLowerCase().includes('expired') || msg.toLowerCase().includes('invalid')) {
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          window.location.href = '/login'
+          return
+        }
+        setError(msg)
+      })
       .finally(() => setLoading(false))
   }, [user])
 
