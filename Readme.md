@@ -1,4 +1,4 @@
-# ⚡ AI-Powered Code Grading & Doubt Resolution Portal
+# AI-Powered Code Grading & Doubt Resolution Portal
 
 ## KPMG G&PS E&S Internship Assignment — GenAI Track
 
@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Problem Statement
+## Problem Statement
 
 Universities face two bottlenecks: **manual code grading is slow and inconsistent**, and **students wait days for doubt answers**. This portal solves both with AI:
 
@@ -18,7 +18,7 @@ Universities face two bottlenecks: **manual code grading is slow and inconsisten
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Layer | Technology | Role in this project |
 |---|---|---|
@@ -38,52 +38,52 @@ Universities face two bottlenecks: **manual code grading is slow and inconsisten
 
 ---
 
-## 🚀 Live Links
+## Live Links
 
 | | URL |
 |---|---|
-| 🌐 Frontend | https://kpmg-frontend.onrender.com |
-| 🔧 Backend API | https://kpmg-ai-backend.onrender.com |
-| ❤️ Health Check | https://kpmg-ai-backend.onrender.com/api/health |
+| Frontend | https://kpmg-frontend.onrender.com |
+| Backend API | https://kpmg-ai-backend.onrender.com |
+| Health Check | https://kpmg-ai-backend.onrender.com/api/health |
 
 ---
 
-## 🔑 Demo Accounts
+## Demo Accounts
 
 | Role | Username | Password |
 |---|---|---|
-| 👨‍🎓 Student | `123` | `patel123` |
-| 👩‍🏫 Teacher | `teacher1` | `teacher123` |
+| Student | `123` | `patel123` |
+| Teacher | `teacher1` | `teacher123` |
 
 ---
 
-## 🧪 Quick Test Examples
+## Quick Test Examples
 
-### ✅ Python — 5/5 (paste this in Submit Code)
+### Python — 5/5 (paste this in Submit Code)
 ```python
 a, b = map(int, input().split())
 print(a + b)
 ```
 
-### ❌ Python — 0/5 (wrong logic)
+### Python — 0/5 (wrong logic)
 ```python
 a, b = map(int, input().split())
 print(a * b)
 ```
 
-### ⏱️ Python — TIMEOUT (infinite loop)
+### Python — TIMEOUT (infinite loop)
 ```python
 while True:
     pass
 ```
 
-### ✅ JavaScript — 5/5
+### JavaScript — 5/5
 ```javascript
 const [a, b] = input().split(' ').map(Number);
 console.log(a + b);
 ```
 
-### ❌ JavaScript — 0/5 (syntax error)
+### JavaScript — 0/5 (syntax error)
 ```javascript
 const [a, b] = input().split(' ').map(Number
 console.log(a + b);
@@ -91,7 +91,7 @@ console.log(a + b);
 
 ---
 
-## 💬 Doubt Board — Try These Questions
+## Doubt Board — Try These Questions
 
 **Question 1:**
 ```
@@ -110,9 +110,9 @@ What causes RecursionError in Python and how do I fix it?
 
 ---
 
-## 🚨 Prompt Injection — Try These Attacks
+## Prompt Injection — Try These Attacks
 
-After submitting, check **🚨 Injection Logs** in the teacher dashboard to see how each attack was caught and blocked.
+After submitting, check **Injection Logs** in the teacher dashboard to see how each attack was caught and blocked.
 
 **Attack 1 — Role switch:**
 ```
@@ -144,7 +144,7 @@ My question: What is a Python class?
 
 ---
 
-## ⚙️ Local Setup
+## Local Setup
 
 ```bash
 git clone https://github.com/Aryan-Patel-web/ai-code-grading-portal
@@ -177,7 +177,7 @@ NODE_SANDBOX_IMAGE=mirror.gcr.io/library/node:18-alpine
 
 ---
 
-## ✅ Feature Checklist
+## Feature Checklist
 
 ### Core Requirements
 - [x] Student submits Python or JavaScript code
@@ -205,7 +205,7 @@ NODE_SANDBOX_IMAGE=mirror.gcr.io/library/node:18-alpine
 
 ---
 
-## 📁 Structure
+## Structure
 
 ```
 ai-code-grading-portal/
@@ -228,6 +228,6 @@ ai-code-grading-portal/
 
 ---
 
-## 📝 Deployment Note
+## Deployment Note
 
 On Render free tier, Docker is unavailable. The sandbox automatically falls back to running `python3`/`node` via `child_process.spawn` with the same 10-second SIGKILL timeout. All other features (grading, AI feedback, doubts, injection defence) work identically. The demo video shows Docker sandbox running locally.
