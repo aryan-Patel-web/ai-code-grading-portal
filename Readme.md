@@ -71,6 +71,7 @@ a, b = map(int, input().split())
 print(a * b)
 ```
 
+
 ### Python — TIMEOUT (infinite loop)
 ```python
 while True:
