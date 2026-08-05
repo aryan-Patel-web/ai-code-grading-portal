@@ -1,8 +1,10 @@
 # ⚡ AI-Powered Code Grading & Doubt Resolution Portal
 
-> **KPMG G&PS E&S Internship Assignment — GenAI Track**
-> Deployed: https://kpmg-frontend.onrender.com
-#Repo: https://github.com/Aryan-Patel-web/ai-code-grading-portal
+## KPMG G&PS E&S Internship Assignment — GenAI Track
+
+1. **Live Demo:** https://kpmg-frontend.onrender.com
+2. **GitHub Repository:** https://github.com/Aryan-Patel-web/ai-code-grading-portal
+3. **Tech Stack:** Next.js, MERN, PostgreSQL, GenAI, RAG, LLM Integration
 
 ---
 
