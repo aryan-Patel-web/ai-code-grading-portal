@@ -217,4 +217,5 @@ ai-code-grading-portal/
 
 ## 🔒 Sandbox Note
 
+
 On **Render free tier**, Docker is not available. The sandbox falls back to running `python3`/`node` directly as a subprocess with a 10-second SIGKILL timeout. All other features work identically. The demo video (recorded locally) shows the full Docker sandbox in action.
