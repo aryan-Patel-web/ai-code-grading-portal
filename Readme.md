@@ -1,7 +1,8 @@
 # ⚡ AI-Powered Code Grading & Doubt Resolution Portal
 
 > **KPMG G&PS E&S Internship Assignment — GenAI Track**
-> Built by Aryan Patel | Deployed: https://kpmg-frontend.onrender.com
+> Built by Aryan Patel 
+> Deployed: https://kpmg-frontend.onrender.com
 
 ---
 
